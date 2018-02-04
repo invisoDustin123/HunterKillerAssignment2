@@ -4,8 +4,8 @@
 #include "stdafx.h"
 #include <iostream>
 #include <ctime>
-using std::cout;
-using std::endl;
+using namespace std;
+
 
 
 int main()
@@ -18,34 +18,115 @@ int main()
 	int searchGridHighNumber = 64;
 	int searchGridLowNumber = 1;
 	int enemyLocation = rand() % searchGridHighNumber + searchGridLowNumber;
-	int targetLocationPredictionCounter = 0;
+	int BinaryPredictionCounter = 0;
+	int LinearPredictionCounter = 0;
+	int RandomPredictionCounter = 0;
+	int PlayerPredictionCounter = 0;
+	int LinearPrediction = 0;
+	int PlayerPrediction = 0;
+	int BinaryPrediction = 0;
+	int RandomPrediction = 0;
+	int turns = 0;
 	bool targetFound = false;
 
-	cout << "Begin search." << endl;
+	//game loops while the target isn't found
+	while (!targetFound) {
 
-	while (targetFound == false)
-	{
-		int targetLocationPrediction = ((searchGridHighNumber - searchGridLowNumber) / 2) + searchGridLowNumber;
+		//using switch to iterate through turns
+		switch (turns) {
+		case 0:
+			//Binary AI
+			if (!targetFound) {
+				//Does a binary search to find the enemy
+				cout << "Begin binary search." << endl;
 
-		targetLocationPredictionCounter++;
+				BinaryPrediction = ((searchGridHighNumber - searchGridLowNumber) / 2) + searchGridLowNumber;
 
-		if (targetLocationPrediction > enemyLocation)
-		{
-			searchGridHighNumber = targetLocationPrediction - 1;
-			cout << "Too high." << endl;
+				BinaryPredictionCounter++;
 
+				if (BinaryPrediction > enemyLocation)
+				{
+					searchGridHighNumber = BinaryPrediction - 1;
+				}
+				else if (BinaryPrediction < enemyLocation)
+				{
+					searchGridLowNumber = BinaryPrediction + 1;
+				}
+				else
+				{
+					cout << "Hunted and Killed after " << BinaryPredictionCounter << " areas searched by Binary AI." << endl;
+					targetFound = true;
+				}
+			}
+			break;
+		case 1:
+			//Linear AI
+			if (!targetFound) {
+				//Always guesses counting by 1 starting at 1
+				cout << "Begin linear search." << endl;
+
+				LinearPrediction++;
+
+				LinearPredictionCounter++;
+
+				if (LinearPrediction == enemyLocation) {
+					cout << "Hunted and Killed after " << LinearPredictionCounter << " areas searched by Linear AI" << endl;
+					targetFound = true;
+				}
+			}
+			break;
+		case 2:
+			//Random AI
+			if (!targetFound) {
+				//Makes a random guess
+				cout << "Begin random search." << endl;
+
+				RandomPrediction = rand() % 64 + 1;
+
+				RandomPredictionCounter++;
+
+				if (RandomPrediction == enemyLocation) {
+					cout << "Hunted and Killed after " << RandomPredictionCounter << " areas searched by Random AI" << endl;
+					targetFound = true;
+				}
+			}
+			break;
+		case 3:
+			//Player
+			if (!targetFound) {
+				//Gets a guess from a player and gives them hints if incorrect
+				PlayerPredictionCounter++;
+
+				cout << "Your turn, make your guess." << endl;
+
+				cin >> PlayerPrediction;
+
+				if (PlayerPrediction > enemyLocation) {
+					cout << "Too High." << endl;
+				}
+				else if (PlayerPrediction < enemyLocation) {
+					cout << "Too Low." << endl;
+				}
+				else {
+					cout << "You found it after " << PlayerPredictionCounter << " areas searched." << endl;
+					targetFound = true;
+				}
+			}
+			break;
+			
 		}
-		else if (targetLocationPrediction < enemyLocation)
-		{
-			searchGridLowNumber = targetLocationPrediction + 1;
-			cout << "Too low." << endl;
-		}
-		else
-		{
-			cout << "Hunted and Killed after " << targetLocationPredictionCounter << " areas searched." << endl;
-			targetFound = true;
+		//after the turn is finished, increments turn variable which is checked by switch and used to determine next turn
+		turns++;
+		if (turns > 3) {
+			turns = 0;
 		}
 	}
+
+
+
+
+
+
 	return 0;
 }
 
